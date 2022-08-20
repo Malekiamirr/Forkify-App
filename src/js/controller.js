@@ -129,7 +129,12 @@ const controlAddRecipe = async function (newRecipe) {
     addRecipeView.rederError(err.message);
   }
 };
+const newFeature = function () {
+  console.log('Welcome');
+};
 
+const init = function () {
+  bookmarksView.addHandlerRender(controlB
 const init = function () {
   bookmarksView.addHandlerRender(controlBookmarks);
   recipeView.addHandlerRender(controlRecipes);
@@ -139,11 +144,3 @@ const init = function () {
   paginationView.addHandlerClick(controlPagination);
   addRecipeView.addHandlerUpload(controlAddRecipe);
   console.log('Welcome!');
-};
-init();
-
-const clearBookmarks = function () {
-  localStorage.clear('bookmarks');
-};
-
-// clearBookmarks();
