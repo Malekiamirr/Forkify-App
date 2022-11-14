@@ -13,10 +13,10 @@ export const state = {
   },
   bookmarks: [],
 };
+
 const createRecipeObject = function (data) {
-  // let recipe = data.data.recipe; (Equal to next line)
   const { recipe } = data.data;
-  return (state.recipe = {
+  return {
     id: recipe.id,
     title: recipe.title,
     publisher: recipe.publisher,
@@ -26,7 +26,7 @@ const createRecipeObject = function (data) {
     cookingTime: recipe.cooking_time,
     ingredients: recipe.ingredients,
     ...(recipe.key && { key: recipe.key }),
-  });
+  };
 };
 
 export const loadRecipe = async function (id) {
@@ -38,7 +38,7 @@ export const loadRecipe = async function (id) {
       state.recipe.bookmarked = true;
     else state.recipe.bookmarked = false;
 
-    // console.log(state.recipe);
+    console.log(state.recipe);
   } catch (err) {
     // Temp error handling
     console.error(`${err} 💥💥💥💥`);
@@ -46,7 +46,7 @@ export const loadRecipe = async function (id) {
   }
 };
 
-export const loadSearchResuls = async function (query) {
+export const loadSearchResults = async function (query) {
   try {
     state.search.query = query;
 
@@ -81,8 +81,9 @@ export const getSearchResultsPage = function (page = state.search.page) {
 export const updateServings = function (newServings) {
   state.recipe.ingredients.forEach(ing => {
     ing.quantity = (ing.quantity * newServings) / state.recipe.servings;
-    // new Qt = oldQt * newServings / oldServings //=> 2 * 8 / 4 = 4
+    // newQt = oldQt * newServings / oldServings // 2 * 8 / 4 = 4
   });
+
   state.recipe.servings = newServings;
 };
 
@@ -91,7 +92,7 @@ const persistBookmarks = function () {
 };
 
 export const addBookmark = function (recipe) {
-  // Add
+  // Add bookmark
   state.bookmarks.push(recipe);
 
   // Mark current recipe as bookmarked
@@ -115,7 +116,6 @@ const init = function () {
   const storage = localStorage.getItem('bookmarks');
   if (storage) state.bookmarks = JSON.parse(storage);
 };
-
 init();
 
 const clearBookmarks = function () {
@@ -128,13 +128,15 @@ export const uploadRecipe = async function (newRecipe) {
     const ingredients = Object.entries(newRecipe)
       .filter(entry => entry[0].startsWith('ingredient') && entry[1] !== '')
       .map(ing => {
-        // const ingArr = ing[1].replaceAll(' ', '').split(',');
         const ingArr = ing[1].split(',').map(el => el.trim());
+        // const ingArr = ing[1].replaceAll(' ', '').split(',');
         if (ingArr.length !== 3)
           throw new Error(
-            'Wrong ingredient format, Please use the correct format :)'
+            'Wrong ingredient fromat! Please use the correct format :)'
           );
+
         const [quantity, unit, description] = ingArr;
+
         return { quantity: quantity ? +quantity : null, unit, description };
       });
 
